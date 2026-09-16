@@ -125,6 +125,10 @@ class DownloadManager:
     def resume(self) -> None:
         self._pause_event.set()
 
+    @property
+    def is_paused(self) -> bool:
+        return not self._pause_event.is_set()
+
     def stop(self) -> None:
         self._stop_flag.set()
         self._pause_event.set()
