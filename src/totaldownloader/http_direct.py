@@ -1,5 +1,6 @@
 """Descarga HTTP(S) directa, con reanudación vía Range requests."""
 
+from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -10,6 +11,19 @@ from tqdm import tqdm
 def filename_from_url(url: str) -> str:
     name = unquote(Path(urlparse(url).path).name)
     return name or "download.bin"
+
+
+@dataclass
+class HttpTarget:
+    filename: str
+
+    @property
+    def ext(self) -> str:
+        return Path(self.filename).suffix.lstrip(".") or "?"
+
+
+def list_http_target(url: str) -> HttpTarget:
+    return HttpTarget(filename=filename_from_url(url))
 
 
 def download_http(url: str, output_dir: Path, chunk_size: int = 1024 * 1024) -> Path:
