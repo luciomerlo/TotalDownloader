@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "totaldownloader"
+version = "0.1.0"
+description = "Descargador unificado: video/audio, HTTP directo y torrents/magnet."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "yt-dlp>=2024.1.0",
+    "httpx>=0.27",
+    "click>=8.1",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+torrent = ["libtorrent>=2.0"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+totaldownloader = "totaldownloader.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/totaldownloader"]
+
+[tool.ruff]
+line-length = 100
