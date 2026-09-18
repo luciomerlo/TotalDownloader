@@ -83,6 +83,32 @@ def _handle_http(source: str, output_dir: Path, yes: bool, concurrency: int) -> 
         click.echo(f"Descargado: {dest}")
 
 
+def _handle_scribd(source: str, output_dir: Path, yes: bool) -> None:
+    from .scribd import download_scribd, list_scribd_target
+
+    target = list_scribd_target(source)
+    click.echo(f"Documento detectado: {target.filename}")
+
+    if yes or click.confirm("¿Descargar?", default=True):
+        dest = download_scribd(source, output_dir)
+        click.echo(f"Descargado: {dest}")
+
+
+def _handle_scrape(source: str, output_dir: Path, yes: bool, prompt: str | None) -> None:
+    from .scrape import download_scrape, list_scrape_target
+
+    if not prompt:
+        prompt = click.prompt("¿Qué querés extraer de la página?")
+
+    target = list_scrape_target(source, prompt)
+    click.echo(f"Fuente: {target.url}")
+    click.echo(f"Prompt: {target.prompt}")
+
+    if yes or click.confirm("¿Scrapear?", default=True):
+        dest = download_scrape(source, target.prompt, output_dir)
+        click.echo(f"Resultado guardado: {dest}")
+
+
 @click.command()
 @click.argument("source")
 @click.option(
@@ -110,11 +136,24 @@ def _handle_http(source: str, output_dir: Path, yes: bool, concurrency: int) -> 
 @click.option(
     "--type",
     "source_type",
-    type=click.Choice(["auto", "media", "http", "torrent"]),
+    type=click.Choice(["auto", "media", "http", "torrent", "scribd", "scrape"]),
     default="auto",
     help="Forzar el tipo de fuente en lugar de autodetectarlo.",
 )
-def main(source: str, output_dir: Path, yes: bool, concurrency: int, source_type: str) -> None:
+@click.option(
+    "--prompt",
+    "scrape_prompt",
+    default=None,
+    help="Prompt de extracción para --type scrape (si no se pasa, se pregunta).",
+)
+def main(
+    source: str,
+    output_dir: Path,
+    yes: bool,
+    concurrency: int,
+    source_type: str,
+    scrape_prompt: str | None,
+) -> None:
     """Analiza SOURCE, lista lo detectado y descarga el alcance elegido."""
     kind = detect_source_type(source) if source_type == "auto" else source_type
 
@@ -122,6 +161,10 @@ def main(source: str, output_dir: Path, yes: bool, concurrency: int, source_type
         _handle_media(source, output_dir, yes, concurrency)
     elif kind == "torrent":
         _handle_torrent(source, output_dir, yes)
+    elif kind == "scribd":
+        _handle_scribd(source, output_dir, yes)
+    elif kind == "scrape":
+        _handle_scrape(source, output_dir, yes, scrape_prompt)
     else:
         _handle_http(source, output_dir, yes, concurrency)
 

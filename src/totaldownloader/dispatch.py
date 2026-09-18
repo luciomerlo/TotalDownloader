@@ -17,6 +17,8 @@ def _get_media_extractors():
 def detect_source_type(source: str) -> str:
     if source.startswith("magnet:") or source.endswith(".torrent"):
         return "torrent"
+    if "scribd.com/document/" in source or "scribd.com/doc/" in source:
+        return "scribd"
     if any(ie.suitable(source) for ie in _get_media_extractors()):
         return "media"
     return "http"
