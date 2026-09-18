@@ -1,6 +1,6 @@
 # TotalDownloader
 
-Descargador unificado de línea de comandos: video/audio (vía yt-dlp), enlaces HTTP directos con reanudación, y torrents/magnet.
+Descargador unificado de línea de comandos en Python que detecta automáticamente el tipo de fuente (magnet/torrent, URL de yt-dlp o HTTP directo) y descarga video/audio, torrents o archivos con reanudación y concurrencia configurable, listando el contenido y preguntando el alcance antes de bajar nada.
 
 ## Instalación
 
