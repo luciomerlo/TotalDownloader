@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 torrent = ["libtorrent>=2.0"]
+scrape = ["scrapegraphai>=1.76.0"]
 dev = ["pytest>=8.0", "ruff>=0.5"]
 
 [project.scripts]

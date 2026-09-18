@@ -8,6 +8,8 @@ Descargador unificado de línea de comandos en Python que detecta automáticamen
 pip install -e ".[dev]"
 # Para soporte de torrents/magnet:
 pip install -e ".[torrent]"
+# Para soporte de scraping (ScrapeGraphAI):
+pip install -e ".[scrape]"
 ```
 
 ## Uso
