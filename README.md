@@ -1,32 +1,32 @@
 # TotalDownloader
 
-Descargador unificado de línea de comandos en Python que detecta automáticamente el tipo de fuente (magnet/torrent, URL de yt-dlp o HTTP directo) y descarga video/audio, torrents o archivos con reanudación y concurrencia configurable, listando el contenido y preguntando el alcance antes de bajar nada.
+Unified Python command-line downloader that automatically detects the source type (magnet/torrent, yt-dlp URL, or direct HTTP) and downloads video/audio, torrents, or files with resumable, configurable-concurrency downloads, listing the content and asking for the scope before downloading anything.
 
-## Instalación
+## Installation
 
 ```bash
 pip install -e ".[dev]"
-# Para soporte de torrents/magnet:
+# For torrent/magnet support:
 pip install -e ".[torrent]"
 ```
 
-## Uso
+## Usage
 
 ```bash
-totaldownloader <URL o magnet o .torrent> [-o DIRECTORIO] [-y] [-c CONCURRENCIA] [--type auto|media|http|torrent]
+totaldownloader <URL or magnet or .torrent> [-o DIRECTORY] [-y] [-c CONCURRENCY] [--type auto|media|http|torrent]
 ```
 
-El tipo de fuente se autodetecta: enlaces `magnet:` y `.torrent` van al motor de torrents, URLs de sitios soportados por yt-dlp van al motor de media, y el resto se trata como descarga HTTP directa.
+The source type is auto-detected: `magnet:` links and `.torrent` files go to the torrent engine, URLs from sites supported by yt-dlp go to the media engine, and everything else is treated as a direct HTTP download.
 
-Antes de descargar, la herramienta analiza la fuente y muestra lo detectado, preguntando el alcance. La selección acepta números ("1,3"), extensiones tildadas ("mp4,srt") o "todos":
+Before downloading, the tool analyzes the source and shows what it detected, asking for the scope. The selection accepts numbers ("1,3"), extensions ("mp4,srt"), or "all":
 
-- **Media**: lista los formatos disponibles (resolución/calidad, extensión, tamaño aproximado). Los formatos elegidos se descargan **en paralelo** (`-c`, default 4 workers).
-- **Torrent/magnet**: lista los archivos incluidos (ruta, tamaño). libtorrent ya baja piezas de todos los archivos priorizados en paralelo dentro de una misma sesión — no hace falta orquestar hilos.
-- **HTTP directo**: muestra el archivo detectado y pide confirmación. Si el servidor soporta `Range`, se descarga **multi-conexión** (segmentado en `-c` partes en paralelo); si no, cae a una sola conexión con reanudación.
+- **Media**: lists the available formats (resolution/quality, extension, approximate size). The chosen formats are downloaded **in parallel** (`-c`, default 4 workers).
+- **Torrent/magnet**: lists the included files (path, size). libtorrent already downloads pieces from all prioritized files in parallel within the same session — no need to orchestrate threads.
+- **Direct HTTP**: shows the detected file and asks for confirmation. If the server supports `Range`, it downloads **multi-connection** (segmented into `-c` parallel parts); if not, it falls back to a single connection with resume support.
 
-`-y`/`--yes` salta las preguntas y descarga todo lo detectado.
+`-y`/`--yes` skips the questions and downloads everything detected.
 
-## Desarrollo
+## Development
 
 ```bash
 pip install -e ".[dev]"
@@ -34,6 +34,6 @@ ruff check .
 pytest
 ```
 
-## Estado
+## Status
 
-MVP: los tres motores (media, HTTP, torrent) analizan la fuente, listan lo detectado (con selección por número o extensión) y descargan el alcance elegido con paralelismo donde aplica. Pendiente: GUI de escritorio, manejo de errores más granular por motor.
+MVP: all three engines (media, HTTP, torrent) analyze the source, list what they detect (selectable by number or extension), and download the chosen scope with parallelism where applicable. Pending: desktop GUI, more granular per-engine error handling.
